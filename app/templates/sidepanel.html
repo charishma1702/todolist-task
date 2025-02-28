@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <div id="tasks-container" class="flex">
+        <aside id="defaultSidePanel"
+            class="w-80 bg-blue-100 shadow-lg fixed top-0 left-0 z-40 h-screen transition-transform -translate-x-full sm:translate-x-0">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold text-gray-800">Categories</h2>
+                <div class="mt-4">
+                    <div class="relative overflow-hidden">
+                        <input id="new-list-input"
+                            class="w-full px-4 py-2 text-gray-700 border border-black-800 rounded-lg focus:outline-none focus:ring focus:border-blue-400"
+                            type="text" placeholder="New List">
+                        <button id="add-new-list"
+                            class="absolute right-2 top-2 text-gray-600 hover:bg-blue-300 hover:rounded-md">➕</button>
+                    </div><br>
+                    <ul id="lists" class="space-y-2 font-medium"></ul>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal"
+        class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 backdrop-blur-sm hidden z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 id="modal-title" class="text-xl font-bold mb-4"></h2>
+            <input id="modal-input" type="text"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 hidden">
+            <div class="flex justify-end mt-4">
+                <button id="modal-cancel" class="px-4 py-2 bg-gray-300 rounded-md mr-2">Cancel</button>
+                <button id="modal-confirm" class="px-4 py-2 bg-blue-500 text-white rounded-md">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const url = "http://127.0.0.1:8000/api";
+        const listsContainer = document.getElementById('lists');
+        const newListInput = document.getElementById('new-list-input');
+        const addNewListButton = document.getElementById('add-new-list');
+        const modal = document.getElementById("modal");
+        const modalTitle = document.getElementById("modal-title");
+        const modalInput = document.getElementById("modal-input");
+        const modalConfirm = document.getElementById("modal-confirm");
+        const modalCancel = document.getElementById("modal-cancel");
+
+        let currentAction = null;
+        let currentCategoryId = null;
+
+        function openModal(action, categoryId, categoryName = "") {
+            currentAction = action;
+            currentCategoryId = categoryId;
+            modal.classList.remove("hidden");
+
+            if (action === "edit") {
+                modalTitle.textContent = "Edit List Name";
+                modalInput.classList.remove("hidden");
+                modalInput.value = categoryName;
+            } else if (action === "delete") {
+                modalTitle.textContent = "Are you sure you want to delete this list?";
+                modalInput.classList.add("hidden");
+            }
+        }
+
+        modalCancel.addEventListener("click", () => {
+            modal.classList.add("hidden");
+        });
+
+        modalConfirm.addEventListener("click", async () => {
+            if (currentAction === "edit") {
+                const newName = modalInput.value.trim();
+                if (newName) {
+                    await fetch(`${url}/categories/${currentCategoryId}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ name: newName })
+                    });
+                    fetchCategories();
+                }
+            } else if (currentAction === "delete") {
+                await fetch(`${url}/categories/${currentCategoryId}`, { method: "DELETE" });
+                fetchCategories();
+            }
+            modal.classList.add("hidden");
+        });
+
+        addNewListButton.addEventListener('click', async () => {
+            const newListName = newListInput.value.trim();
+            if (newListName) {
+                await fetch(`${url}/categories`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: newListName })
+                });
+                newListInput.value = '';
+                fetchCategories();
+            }
+        });
+
+        async function fetchCategories() {
+            const response = await fetch(`${url}/categories`);
+            const data = await response.json();
+            listsContainer.innerHTML = '';
+            data.data.forEach(category => {
+                const newListElement = document.createElement('li');
+                newListElement.innerHTML = `
+                    <div class="group flex justify-between items-center rounded-lg hover:bg-blue-700 hover:text-white transition px-4 py-2">
+                        <span><b>${category.name}</b></span>
+                        <div class="relative">
+                            <button onclick="toggleDropdown('${category._id}')" class="text-black hover:text-blue-600">&#8942;</button>
+                            <ul id="dropdown-${category._id}" class="hidden absolute right-0 mt-2 w-30 bg-white border rounded-lg shadow-lg">
+                                <li><button onclick="openModal('edit', '${category._id}', '${category.name}')" class="block w-full text-black text-left px-4 py-2 hover:bg-gray-200">Edit</button></li>
+                                <li><button onclick="openModal('delete', '${category._id}')" class="block w-full text-left px-4 py-2 hover:bg-gray-200 text-red-600">Delete</button></li>
+                            </ul>
+                        </div>
+                    </div>`;
+                listsContainer.appendChild(newListElement);
+            });
+        }
+
+        let activeDropdown = null;
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(`dropdown-${id}`);
+            if (activeDropdown && activeDropdown !== dropdown) {
+                activeDropdown.classList.add('hidden');
+            }
+            dropdown.classList.toggle('hidden');
+            activeDropdown = dropdown.classList.contains('hidden') ? null : dropdown;
+        }
+
+        document.addEventListener('click', (event) => {
+            if (activeDropdown && !event.target.closest('.relative')) {
+                activeDropdown.classList.add('hidden');
+                activeDropdown = null;
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', fetchCategories);
+    </script>
+</body>
+</html>
