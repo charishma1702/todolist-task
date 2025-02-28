@@ -138,11 +138,6 @@
             </div>
         </main>
     </div>
-    <!-- Error Toast -->
-    <div id="error-toast"
-        class="fixed z-50 top-12 right-8 bg-red-500 text-white rounded-lg px-4 py-2 shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 ease-in-out">
-        <span id="error-message"></span>
-    </div>
     <script src="/static/toaster.js"></script>
 
     <script>
@@ -379,7 +374,7 @@
                 resetTaskForm();
                 await getTasks();
             } catch (error) {
-                showToast(error.message,"bg-red-500");
+                showToast(`Error: ${`Error: ${error.message}`}`,"bg-red-500");
             }
         });
         function fetchTaskCategories() {
@@ -545,7 +540,7 @@
                 tasks.forEach(addTaskToUI);
             } catch (error) {
                 console.error("Error fetching tasks:", error);
-                showToast(error.message, "bg-red-500");
+                showToast(`Error: ${error.message}`, "bg-red-500");
             }
         }
 
@@ -558,7 +553,7 @@
                 if (!response.ok) throw new Error(data.detail || "Failed to delete task");
                 taskElement.remove();
             } catch (error) {
-                showToast(error.message, "bg-red-500");
+                showToast(`Error: ${error.message}`, "bg-red-500");
             }
         }
 
@@ -578,7 +573,7 @@
                 statusElement.classList.toggle("text-green-600", status === "completed");
                 statusElement.classList.toggle("text-red-600", status === "pending");
             } catch (error) {
-                showToast(error.message, "bg-red-500");
+                showToast(`Error: ${error.message}`, "bg-red-500");
             }
         }
         function updateTaskInUI(taskId, updatedData) {
