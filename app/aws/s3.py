@@ -15,13 +15,3 @@ s3_client = boto3.client(
     aws_secret_access_key=AWS_SECRET_KEY,
     region_name=AWS_REGION
 )
-
-
-# def upload_file_to_s3(file, filename, folder="uploads"):
-#     """Uploads a file to S3 and returns the file URL"""
-#     try:
-#         s3_client.upload_fileobj(file.file, AWS_BUCKET_NAME, f"{folder}/{filename}")
-#         file_url = f"https://{AWS_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com/{folder}/{filename}"
-#         return file_url
-#     except NoCredentialsError:
-#         return {"error": "AWS credentials not found"}

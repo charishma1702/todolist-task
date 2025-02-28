@@ -10,7 +10,7 @@
 <body>
     <div id="tasks-container" class="flex">
         <aside id="defaultSidePanel"
-            class="w-80 bg-blue-100 shadow-lg fixed top-0 left-0 z-40 h-screen transition-transform -translate-x-full sm:translate-x-0">
+            class="w-80 bg-blue-200 shadow-lg fixed top-0 left-0 z-40 h-screen transition-transform -translate-x-full sm:translate-x-0">
             <div class="p-6">
                 <h2 class="text-2xl font-bold text-gray-800">Categories</h2>
                 <div class="mt-4">
@@ -40,7 +40,7 @@
             </div>
         </div>
     </div>
-
+    <script src="/static/toaster.js"></script>
     <script>
         const url = "http://127.0.0.1:8000/api";
         const listsContainer = document.getElementById('lists');
@@ -84,10 +84,13 @@
                         body: JSON.stringify({ name: newName })
                     });
                     fetchCategories();
+                    showToast("Category updated successfully", "bg-green-500")
                 }
             } else if (currentAction === "delete") {
                 await fetch(`${url}/categories/${currentCategoryId}`, { method: "DELETE" });
                 fetchCategories();
+                showToast("Category deleted successfully", "bg-green-500")
+
             }
             modal.classList.add("hidden");
         });
@@ -102,6 +105,8 @@
                 });
                 newListInput.value = '';
                 fetchCategories();
+                showToast("Category created successfully", "bg-green-500")
+                
             }
         });
 
@@ -115,8 +120,8 @@
                     <div class="group flex justify-between items-center rounded-lg hover:bg-blue-700 hover:text-white transition px-4 py-2">
                         <span><b>${category.name}</b></span>
                         <div class="relative">
-                            <button onclick="toggleDropdown('${category._id}')" class="text-black hover:text-blue-600">&#8942;</button>
-                            <ul id="dropdown-${category._id}" class="hidden absolute right-0 mt-2 w-30 bg-white border rounded-lg shadow-lg">
+                            <button onclick="toggleDropdown('${category._id}')" class="text-black hover:text-white hover-text-xl ">&#8942;</button>
+                            <ul id="dropdown-${category._id}" class="hidden absolute right-0 mt-2 w-30 bg-white border rounded-lg shadow-lg z-50">
                                 <li><button onclick="openModal('edit', '${category._id}', '${category.name}')" class="block w-full text-black text-left px-4 py-2 hover:bg-gray-200">Edit</button></li>
                                 <li><button onclick="openModal('delete', '${category._id}')" class="block w-full text-left px-4 py-2 hover:bg-gray-200 text-red-600">Delete</button></li>
                             </ul>

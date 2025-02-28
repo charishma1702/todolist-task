@@ -16,6 +16,6 @@ function showToast(message, color = "bg-green-500") {
 
     setTimeout(() => {
         toast.style.opacity = "0";
-        setTimeout(() => toast.remove(), 300);
+        setTimeout(() => toast.remove(), 3000);
     }, 3000);
 }
