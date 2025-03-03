@@ -23,7 +23,8 @@
                         class="w-20 h-20 shadow-lg rounded-full bg-blue-100 flex items-center justify-center hover:bg-blue-300">
                         <span class="text-2xl">👤</span>
                     </button>
-                    <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-40 bg-white shadow-md rounded-l-lg">
+                    <div id="profile-dropdown"
+                        class="hidden absolute right-0 mt-2 w-40 bg-white shadow-md rounded-l-lg">
                         <ul class="text-gray-700">
                             <li class="text-black px-8 py-3 hover:bg-blue-900 hover:text-white hover:font-bold cursor-pointer"
                                 id="view-profile">View Profile</li>
@@ -106,6 +107,7 @@
 
                     <label class="block mb-1">Category</label>
                     <select id="taskCategory" class="w-full px-3 py-2 border rounded-lg mb-3"> </select>
+                    <label class="mb-1">Task Name</label>
                     <input id="taskName" type="text" placeholder="Task Name"
                         class="w-full px-3 py-2 border rounded-lg mb-3" />
 
@@ -139,25 +141,14 @@
         </main>
     </div>
     <script src="/static/toaster.js"></script>
-
     <script>
-        document.getElementById("view-profile").addEventListener("click",function(){
-            
-        })
         document.getElementById("sign-out-button").addEventListener("click", function () {
-            // Clear authentication data (modify according to your authentication method)
-            localStorage.removeItem("access_token");  // If you're using localStorage
-            sessionStorage.removeItem("access_token"); // If you're using sessionStorage
-
-            // Redirect to the login page
-            window.location.href = "/";  // Change the URL as needed
+            localStorage.removeItem("access_token"); 
+            window.location.href = "/"; 
         });
 
         const API_BASE_URL = "http://127.0.0.1:8000/api";
-        // Default to 'User' if not found
         const greetingText = document.getElementById("greeting-text");
-        const todayButton = document.getElementById("today-button");
-        const calendarDropdown = document.getElementById("calendar-dropdown");
         const profileButton = document.getElementById("profile-button");
         const profileDropdown = document.getElementById("profile-dropdown");
 
@@ -172,15 +163,9 @@
         }
         setGreeting();
 
-        function updateDate() {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
-            document.getElementById("date").innerText = now.toLocaleDateString(undefined, options);
-        }
-        updateDate();
-
         profileButton.addEventListener("click", () => profileDropdown.classList.toggle("hidden"));
 
+        //Filter
         const filterButton = document.getElementById("filter-button");
         const filterDropdown = document.getElementById("filter-dropdown");
         const filterForm = document.getElementById("task-filters");
@@ -223,10 +208,14 @@
             return date.toISOString().split("T")[0]; // Extract YYYY-MM-DD
         }
 
-        // Store all tasks globally
+        window.addEventListener("message", (event) => {
+        if (event.data.action === "updateTaskToUI") { 
+            console.log("✅ Received updated tasks in body.html:", event.data.tasks)
+            addTaskToUI(event.data.tasks)
+        }
+    })
+
         let allTasks = [];
-
-
         // Function to apply filters to the stored tasks
         function applyFilters() {
             let filteredTasks = [...allTasks]; // Copy the original task list
@@ -291,9 +280,21 @@
                 taskContainer.appendChild(taskElement);
             });
         }
-
         // Fetch tasks when the page loads
         getTasks();
+        
+        document.addEventListener("DOMContentLoaded", () => {
+            const taskDate = document.getElementById("taskDate");
+            const taskTime = document.getElementById("taskTime");
+            const now = new Date();
+            const todayDate = now.toISOString().split("T")[0];
+            const hours = String(now.getHours()).padStart(2, "0");
+            const minutes = String(now.getMinutes()).padStart(2, "0");
+            const currentTime = `${hours}:${minutes}`;
+            taskDate.value = todayDate;
+            taskDate.min = todayDate;
+            taskTime.value = currentTime;
+        });
 
 
         let categories = [];
@@ -331,6 +332,7 @@
         });
 
         addTaskBtn.addEventListener("click", async () => {
+
             const task = {
                 name: taskInputs.name.value.trim() ? taskInputs.name.value : null,
                 category: taskInputs.category.value,
@@ -344,7 +346,7 @@
                 showToast("Task name is mandatory", "bg-red-500");
                 return;
             }
-
+            const accessToken = localStorage.getItem("access_token")
             try {
                 let response;
                 if (editingTaskId) {
@@ -358,7 +360,7 @@
                     // Create New Task
                     response = await fetch(`${API_BASE_URL}/tasks`, {
                         method: "POST",
-                        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${access_token}` },
+                        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${accessToken}` },
                         body: JSON.stringify(task),
                     });
                 }
@@ -372,13 +374,13 @@
                 }
                 taskModal.classList.add("hidden");
                 resetTaskForm();
-                await getTasks();
+                getTasks();
             } catch (error) {
-                showToast(`Error: ${`Error: ${error.message}`}`,"bg-red-500");
+                showToast(`Error: ${`Error: ${error.message}`}`, "bg-red-500");
             }
         });
         function fetchTaskCategories() {
-            return fetch("http://127.0.0.1:8000/api/categories")
+            return fetch(`${API_BASE_URL}/categories`)
                 .then((response) => response.json())
                 .then((result) => {
                     categories = result.data || []; // Get the array from 'data'
@@ -522,7 +524,6 @@
                 if (date) {
                     url += `?due_date=${date}`;
                 }
-
                 const response = await fetch(url);
                 if (!response.ok) {
                     const errorData = await response.json();
@@ -539,7 +540,7 @@
                 taskContainer.innerHTML = "";
                 tasks.forEach(addTaskToUI);
             } catch (error) {
-                console.error("Error fetching tasks:", error);
+                // console.error("Error fetching tasks:", error);
                 showToast(`Error: ${error.message}`, "bg-red-500");
             }
         }
@@ -605,10 +606,10 @@
             });
         }
 
-        document.getElementById("view-profile").addEventListener("click",()=>{
+        document.getElementById("view-profile").addEventListener("click", () => {
             window.location.href = "/profile";
-        } )
-        
+        })
+
 
     </script>
 </body>

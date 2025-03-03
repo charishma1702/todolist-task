@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup</title>
+    <style>
+        /* General styling */
+        body {
+            width: 350px;
+            height: 450px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        form {
+            width: 100%;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+            display: block;
+        }
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fff;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #2ecc71;
+            outline: none;
+        }
+
+        /* Button styling */
+        .form-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            background-color: #2ecc71;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+
+<body>
+    <form>
+        <h2>Create Task</h2>
+
+        <label >Category</label>
+        <select id="taskCategory"></select>
+
+        <label>Task Name</label>
+        <input id="taskName" type="text" placeholder="Enter task name">
+
+        <label>Description</label>
+        <input id="taskDescription" type="text" placeholder="Enter description">
+
+        <label>Due Date</label>
+        <input id="taskDate" type="date">
+
+        <label>Time</label>
+        <input id="taskTime" type="time">
+
+        <label>Priority</label>
+        <select id="taskPriority">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+        </select>
+
+        <div class="form-buttons">
+            <button id="addTaskBtn" type="button">Add Task</button>
+        </div>
+    </form>
+
+    <script src="popup.js"></script>
+</body>
+</html>
