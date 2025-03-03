@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f3f4f6;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .popup-container {
+            background: white;
+            padding: 24px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+            width: 380px;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 12px;
+            background-color: #fff;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #2ecc71;
+            outline: none;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        #cancelTaskBtn {
+            background-color: #6b7280;
+        }
+
+        #cancelTaskBtn:hover {
+            background-color: #ef4444;
+        }
+
+        #resetTaskBtn {
+            background-color: #f59e0b;
+        }
+
+        #resetTaskBtn:hover {
+            background-color: #b45309;
+        }
+
+        #addTaskBtn {
+            background-color: #10b981;
+        }
+
+        #addTaskBtn:hover {
+            background-color: #047857;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="popup-container">
+        <h2>Create Task</h2>
+
+        <label>Category</label>
+        <select id="taskCategory"></select>
+
+        <label>Task Name</label>
+        <input id="taskName" type="text" placeholder="Task Name">
+
+        <label>Description</label>
+        <input id="taskDescription" type="text" placeholder="Enter description">
+
+        <label>Due Date</label>
+        <input id="taskDate" type="date">
+
+        <label>Time</label>
+        <input id="taskTime" type="time">
+
+        <label>Priority</label>
+        <select id="taskPriority">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+        </select>
+
+        <div class="button-container">
+            <button id="cancelTaskBtn">Cancel</button>
+            <button onclick="resetTaskForm()" id="resetTaskBtn">Reset</button>
+            <button id="addTaskBtn">Add Task</button>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+
+</html>

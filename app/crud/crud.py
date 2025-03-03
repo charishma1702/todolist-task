@@ -111,5 +111,3 @@ def validate_collection_name(collection_name: str) -> str:
     if collection_name not in COLLECTIONS:
         raise HTTPException(status_code=400, detail="Invalid collection name")
     return collection_name
-
-
