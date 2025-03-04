@@ -36,16 +36,4 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
 });
 
-// Add this function to send a message to the content script after creating a task
-function sendTaskCreatedMessage(task) {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs.length > 0) {
-            chrome.tabs.sendMessage(tabs[0].id, {
-                action: "taskCreated",
-                task: task
-            });
-        }
-    });
-}
-
 

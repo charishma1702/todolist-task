@@ -4,9 +4,6 @@
     "version": "1.0",
     "description": "A simple Chrome extension with a popup",
     "permissions": [
-        "activeTab",
-        "storage",
-        "scripting",
         "tabs"
     ],
     "host_permissions": [
