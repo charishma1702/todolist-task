@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setCurrentDateTime();
 });
 
-console.log("Extension ID:", chrome.runtime.id);
+
 
 
 // Fetch categories and update the dropdown
