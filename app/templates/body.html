@@ -211,7 +211,7 @@
 
         window.addEventListener("message", (event) => {
             if (event.data.action === "updateContainer") {
-                const tasks = event.data.tasks;console.log("tasks",tasks);
+                const tasks = event.data.tasks;
                 document.getElementById('taskContainer').innerHTML=''
                 tasks.forEach(addTaskToUI);
             }
