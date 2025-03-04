@@ -24,6 +24,7 @@
                         <span class="text-2xl">👤</span>
                     </button>
                     <div id="profile-dropdown"
+                       
                         class="hidden absolute right-0 mt-2 w-40 bg-white shadow-md rounded-l-lg">
                         <ul class="text-gray-700">
                             <li class="text-black px-8 py-3 hover:bg-blue-900 hover:text-white hover:font-bold cursor-pointer"
@@ -208,16 +209,7 @@
             return date.toISOString().split("T")[0]; // Extract YYYY-MM-DD
         }
 
-        window.addEventListener("message", (event) => {
-            console.log("eventtttttt",event.data)
-            if (event.data.action === "updateContainer") {
-                console.log("Received updated tasks in body.html:", event.data)
-                const tasks = event.data.tasks;
-                document.getElementById('taskContainer').innerHTML=''
-                tasks.forEach(addTaskToUI);
-            }
-        })
-
+        // Store all tasks globally
         let allTasks = [];
         // Function to apply filters to the stored tasks
         function applyFilters() {
@@ -285,6 +277,19 @@
         }
         // Fetch tasks when the page loads
         getTasks();
+        
+        document.addEventListener("DOMContentLoaded", () => {
+            const taskDate = document.getElementById("taskDate");
+            const taskTime = document.getElementById("taskTime");
+            const now = new Date();
+            const todayDate = now.toISOString().split("T")[0];
+            const hours = String(now.getHours()).padStart(2, "0");
+            const minutes = String(now.getMinutes()).padStart(2, "0");
+            const currentTime = `${hours}:${minutes}`;
+            taskDate.value = todayDate;
+            taskDate.min = todayDate;
+            taskTime.value = currentTime;
+        });
 
         document.addEventListener("DOMContentLoaded", () => {
             const taskDate = document.getElementById("taskDate");
@@ -520,20 +525,18 @@
         }
 
         let editingTaskId = null;
+        async function getTasks(date = null) {
+            try {
+                let url = `${API_BASE_URL}/tasks`;
+                if (date) {
+                    url += `?due_date=${date}`;
+                }
 
-
-// Update the getTasks function to update the UI with the new tasks
-async function getTasks(date = null) {
-    try {
-        let url = `${API_BASE_URL}/tasks`;
-        if (date) {
-            url += `?due_date=${date}`;
-        }
-        const response = await fetch(url);
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.detail || "Failed to fetch tasks");
-        }
+                const response = await fetch(url);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || "Failed to fetch tasks");
+                }
 
         const result = await response.json();
         const tasks = Array.isArray(result) ? result : result.tasks || result.data || [];
@@ -542,13 +545,13 @@ async function getTasks(date = null) {
             throw new Error("Unexpected API response format");
         }
 
-        taskContainer.innerHTML = "";
-        tasks.forEach(addTaskToUI);
-    } catch (error) {
-        // console.error("Error fetching tasks:", error);
-        showToast(`Error: ${error.message}`, "bg-red-500");
-    }
-}
+                taskContainer.innerHTML = "";
+                tasks.forEach(addTaskToUI);
+            } catch (error) {
+                console.error("Error fetching tasks:", error);
+                showToast(`Error: ${error.message}`, "bg-red-500");
+            }
+        }
 
 
 
