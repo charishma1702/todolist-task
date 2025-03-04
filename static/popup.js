@@ -34,14 +34,20 @@ async function fetchCategories() {
     }
 }
 
+
+// Set the date and time fields to the current date and time
 function setCurrentDateTime() {
     const now = new Date();
-    document.getElementById("taskDate").value = now.toISOString().split("T")[0];
-    document.getElementById("taskTime").value = now.toTimeString().slice(0, 5);
+    const formattedDate = now.toISOString().split("T")[0]; // YYYY-MM-DD
+    const formattedTime = now.toTimeString().slice(0, 5); // HH:MM
+
+    document.getElementById("taskDate").value = formattedDate;
+    document.getElementById("taskTime").value = formattedTime;
 }
 
+// Handle task submission
 document.getElementById("addTaskBtn").addEventListener("click", async function (event) {
-    event.preventDefault();
+    event.preventDefault(); // Prevent form submission refresh
 
     const category = document.getElementById("taskCategory").value;
     const task = document.getElementById("taskName").value;
