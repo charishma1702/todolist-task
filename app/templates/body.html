@@ -25,6 +25,7 @@
                     </button>
                     <div id="profile-dropdown"
                        
+                       
                         class="hidden absolute right-0 mt-2 w-40 bg-white shadow-md rounded-l-lg">
                         <ul class="text-gray-700">
                             <li class="text-black px-8 py-3 hover:bg-blue-900 hover:text-white hover:font-bold cursor-pointer"
@@ -217,7 +218,7 @@
                 tasks.forEach(addTaskToUI);
             }
         })
-        // Store all tasks globally
+        // Store all tasks globally   
         let allTasks = [];
         // Function to apply filters to the stored tasks
         function applyFilters() {
@@ -298,7 +299,7 @@
             taskDate.min = todayDate;
             taskTime.value = currentTime;
         });
-
+        
         document.addEventListener("DOMContentLoaded", () => {
             const taskDate = document.getElementById("taskDate");
             const taskTime = document.getElementById("taskTime");
@@ -545,7 +546,6 @@
                     const errorData = await response.json();
                     throw new Error(errorData.detail || "Failed to fetch tasks");
                 }
-
         const result = await response.json();
         const tasks = Array.isArray(result) ? result : result.tasks || result.data || [];
 
@@ -560,7 +560,6 @@
                 showToast(`Error: ${error.message}`, "bg-red-500");
             }
         }
-
 
 
         async function deleteTask(taskId, taskElement) {
