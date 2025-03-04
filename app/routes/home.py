@@ -8,12 +8,9 @@ from app.models.models import LoginRequest, UpdateUserPayload
 from fastapi import APIRouter, File, UploadFile, Depends
 from app.aws.s3 import AWS_BUCKET_NAME, AWS_REGION, s3_client
 from app.database import db
-# from app.crud.crud import update_user_profile_pic
 from botocore.exceptions import NoCredentialsError
 
-
 router = APIRouter()
-
 
 # Define the base directory for template rendering
 BASE_DIR = Path(__file__).resolve().parent.parent.parent

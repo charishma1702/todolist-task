@@ -43,7 +43,6 @@
     <script>
         document.getElementById("loginForm").addEventListener("submit", async function (event) {
             event.preventDefault(); // Prevent form from reloading
-            // Get user input values
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
 
@@ -59,7 +58,6 @@
                     throw new Error(data.detail || "Invalid credentials"); // Handle errors properly
                 }
                 showToast("Login Successful","bg-green-500");
-                // Store JWT token in localStorage
                 localStorage.setItem("access_token", data.token);
                 localStorage.setItem("first_name", data.firstname);
                 localStorage.setItem("email", data.email);
