@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Todo Extension",
     "version": "1.0",
-    "description": "A simple Chrome extension with a popup",
+    "description": "Todo API Extension for the task creation",
     "permissions": [
         "tabs"
     ],

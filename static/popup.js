@@ -9,10 +9,10 @@ console.log("Extension ID:", chrome.runtime.id);
 
 // Fetch categories and update the dropdown
 let categoryMap = {};
-const api_url="http://127.0.0.1:8000/api";
+const API_URL="http://127.0.0.1:8000/api";
 async function fetchCategories() {
     try {
-        let response = await fetch(`${api_url}/categories`);
+        let response = await fetch(`${API_URL}/categories`);
         let responseData = await response.json();
 
         let categoryDropdown = document.getElementById("taskCategory");
@@ -71,7 +71,7 @@ document.getElementById("addTaskBtn").addEventListener("click", async function (
     };
 
     try {
-        let response = await fetch(`${api_url}/tasks`, {
+        let response = await fetch(`${API_URL}/tasks`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
@@ -83,6 +83,8 @@ document.getElementById("addTaskBtn").addEventListener("click", async function (
             alert("Task Created Successfully!");
             chrome.runtime.sendMessage({action:'fetchTasks'})
             resetForm();
+            document.querySelector(".popup-container").style.display = "none";
+            closePopup();
         } else {
             alert("Error: " + data.detail);
         }
@@ -94,7 +96,7 @@ document.getElementById("addTaskBtn").addEventListener("click", async function (
 
 async function fetchTasks() {
     try {
-        let response = await fetch(`${api_url}/tasks`);
+        let response = await fetch(`${API_URL}/tasks`);
         let responseData = await response.json();
 
         console.log("API Response:", responseData); // Log the response
@@ -121,12 +123,13 @@ function resetForm() {
     setCurrentDateTime();
 }
 
-// Cancel button: Close the popup/modal
-document.getElementById("cancelTaskBtn").addEventListener("click", function () {
-    document.querySelector(".popup-container").style.display = "none"; // Hide the popup
-});
+function closePopup() {
+    document.querySelector(".popup-container").style.display = "none";
+    document.body.style.height = "auto"; 
+}
 
-// Reset button: Clear form fields and reset date/time
-document.getElementById("resetTaskBtn").addEventListener("click", function () {
-    resetForm();
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+        document.querySelector(".popup-container").style.display = "none";
+    }
 });
