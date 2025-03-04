@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
 </head>
 
 <body class="overflow-auto w-screen h-screen">
@@ -17,7 +16,6 @@
                     </h1>
                     <p class="text-lg text-gray-600 italic mt-1 text-left block" id="date"></p>
                 </div>
-
                 <div class="relative p-2">
                     <button id="profile-button"
                         class="w-20 h-20 shadow-lg rounded-full bg-blue-100 flex items-center justify-center hover:bg-blue-300">
@@ -63,7 +61,6 @@
                                 <option value="tomorrow">Tomorrow</option>
                                 <option value="custom">Custom</option>
                             </select>
-
                             <!-- Status Filter -->
                             <label class="block text-sm font-semibold text-gray-700">Status</label>
                             <select id="status-filter"
@@ -72,7 +69,6 @@
                                 <option value="pending">Pending</option>
                                 <option value="completed">Completed</option>
                             </select>
-
                             <!-- Priority Filter -->
                             <label class="block text-sm font-semibold text-gray-700">Priority</label>
                             <select id="priority-filter"
@@ -82,7 +78,6 @@
                                 <option value="Medium">Medium</option>
                                 <option value="High">High</option>
                             </select>
-
                             <!-- Buttons -->
                             <div class="flex justify-between mt-4">
 
@@ -98,9 +93,7 @@
                     </div>
                 </div>
             </div>
-
             <div id="taskContainer" class="mt-6 space-y-4"></div>
-
             <!-- Task Modal -->
             <div id="taskModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
                 <div class="bg-white p-6 rounded-lg shadow-lg w-[96]">
@@ -210,12 +203,15 @@
         }
 
         window.addEventListener("message", (event) => {
+            console.log("event",event)
             if (event.data.action === "updateContainer") {
-                const tasks = event.data.tasks;console.log("tasks",tasks);
+                console.log("event.data",event.data)
+                const tasks = event.data.tasks;
                 document.getElementById('taskContainer').innerHTML=''
                 tasks.forEach(addTaskToUI);
             }
         })
+        
 
         let allTasks = [];
         function applyFilters() {
