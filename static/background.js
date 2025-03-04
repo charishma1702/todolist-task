@@ -19,9 +19,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         const taskResponse = await fetchTasks();
         console.log("Fetched tasks:", taskResponse);
         if (taskResponse && taskResponse.length > 0) {
-            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            chrome.tabs.query({}, (tabs) => {
                 if (tabs.length > 0) {
-                    console.log("hereeeeeeeeeee")
                     chrome.tabs.sendMessage(tabs[0].id, {
                         action: "updateContainer",
                         tasks: taskResponse
@@ -35,17 +34,5 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         return true;
     }
 });
-
-// Add this function to send a message to the content script after creating a task
-function sendTaskCreatedMessage(task) {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs.length > 0) {
-            chrome.tabs.sendMessage(tabs[0].id, {
-                action: "taskCreated",
-                task: task
-            });
-        }
-    });
-}
 
 

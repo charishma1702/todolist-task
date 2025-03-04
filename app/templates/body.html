@@ -210,33 +210,24 @@
         }
 
         window.addEventListener("message", (event) => {
-            console.log("eventtttttt",event.data)
             if (event.data.action === "updateContainer") {
-                console.log("Received updated tasks in body.html:", event.data)
-                const tasks = event.data.tasks;
+                const tasks = event.data.tasks;console.log("tasks",tasks);
                 document.getElementById('taskContainer').innerHTML=''
                 tasks.forEach(addTaskToUI);
             }
         })
 
         let allTasks = [];
-        // Function to apply filters to the stored tasks
         function applyFilters() {
-            let filteredTasks = [...allTasks]; // Copy the original task list
-            console.log("filteredTasks", filteredTasks)
+            let filteredTasks = [...allTasks]; 
             let dueDate = dueDateFilter.value;
             const status = statusFilter.value;
             const priority = priorityFilter.value;
-
-            // Convert due date filters to actual date format
             if (dueDate === "today") dueDate = getFormattedDate(0);
             else if (dueDate === "yesterday") dueDate = getFormattedDate(-1);
             else if (dueDate === "tomorrow") dueDate = getFormattedDate(1);
             else if (dueDate === "custom") dueDate = customDateInput.value || ""; // Use selected date
-            else dueDate = ""; // Reset if no selection
-
-            console.log("Filters applied -> Due Date:", dueDate, "Status:", status, "Priority:", priority);
-
+            else dueDate = ""; 
             // Apply filters only if a value is selected
             if (dueDate) {
                 filteredTasks = filteredTasks.filter(task => task.due_date.split('T')[0] === dueDate);
@@ -247,8 +238,6 @@
             if (priority) {
                 filteredTasks = filteredTasks.filter(task => task.priority_level === priority);
             }
-
-            console.log("Filtered tasks:", filteredTasks);
             updateTaskList(filteredTasks);
         }
 
@@ -263,7 +252,6 @@
             taskContainer.innerHTML = ""; // Clear previous tasks
 
             if (!Array.isArray(tasks)) {
-                console.error("Expected tasks to be an array but got:", tasks);
                 return;
             }
 
@@ -612,7 +600,6 @@ async function getTasks(date = null) {
                     const dueDate = new Date(updatedData.due_date).toLocaleString();
                     const taskDetails = taskElement.querySelector("p.text-sm");
 
-                    console.log("Updated priority:", updatedData.priority_level); // Debugging
 
                     taskDetails.innerHTML = `
                 ${updatedData.category} | 

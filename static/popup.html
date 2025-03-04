@@ -9,6 +9,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh; 
             height: 100vh;
             background-color: #f3f4f6;
             font-family: Arial, sans-serif;
@@ -128,7 +129,7 @@
         </select>
 
         <div class="button-container">
-            <button id="cancelTaskBtn">Cancel</button>
+            <button onclick="closePopup()" id="cancelTaskBtn">Cancel</button>
             <button onclick="resetTaskForm()" id="resetTaskBtn">Reset</button>
             <button id="addTaskBtn">Add Task</button>
         </div>
