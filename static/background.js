@@ -17,7 +17,6 @@ console.log("Extension ID:", chrome.runtime.id);
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     if (message.action === "fetchTasks") {
         const taskResponse = await fetchTasks();
-        console.log("Fetched tasks:", taskResponse);
         if (taskResponse && taskResponse.length > 0) {
             chrome.tabs.query({}, (tabs) => {
                 const targetTab = tabs.find(tab => tab.url && tab.url.includes("http://127.0.0.1:8000/index"));
