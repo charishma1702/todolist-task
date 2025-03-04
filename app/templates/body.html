@@ -211,63 +211,84 @@
         })
         
 
-        let allTasks = [];
-        function applyFilters() {
-            let filteredTasks = [...allTasks]; 
-            let dueDate = dueDateFilter.value;
-            const status = statusFilter.value;
-            const priority = priorityFilter.value;
-            if (dueDate === "today") dueDate = getFormattedDate(0);
-            else if (dueDate === "yesterday") dueDate = getFormattedDate(-1);
-            else if (dueDate === "tomorrow") dueDate = getFormattedDate(1);
-            else if (dueDate === "custom") dueDate = customDateInput.value || ""; // Use selected date
-            else dueDate = ""; 
-            // Apply filters only if a value is selected
-            if (dueDate) {
-                filteredTasks = filteredTasks.filter(task => task.due_date.split('T')[0] === dueDate);
-            }
-            if (status) {
-                filteredTasks = filteredTasks.filter(task => task.status === status);
-            }
-            if (priority) {
-                filteredTasks = filteredTasks.filter(task => task.priority_level === priority);
-            }
-            updateTaskList(filteredTasks);
-        }
+        // let allTasks = [];
+        document.getElementById('filter-dropdown').classList.add('hidden');
 
-        // Event listener for the filter form
-        filterForm.addEventListener("submit", (event) => {
-            event.preventDefault();
-            applyFilters();
-        });
+function applyFilters() {
+    let filteredTasks = [...allTasks]; 
+    let dueDate = dueDateFilter.value;  // Declare as let, not const
+    const status = statusFilter.value;
+    const priority = priorityFilter.value;
 
-        // Function to update the UI with tasks
-        function updateTaskList(tasks) {
-            taskContainer.innerHTML = ""; // Clear previous tasks
+    // Convert due date filters to actual dates
+    if (dueDate === "today") dueDate = getFormattedDate(0);
+    else if (dueDate === "yesterday") dueDate = getFormattedDate(-1);
+    else if (dueDate === "tomorrow") dueDate = getFormattedDate(1);
+    else if (dueDate === "custom") dueDate = customDateInput.value || "";
+    else dueDate = ""; 
 
-            if (!Array.isArray(tasks)) {
-                return;
-            }
+    // Apply filters
+    if (dueDate) {
+        filteredTasks = filteredTasks.filter(task => task.due_date.split('T')[0] === dueDate);
+    }
+    if (status) {
+        filteredTasks = filteredTasks.filter(task => task.status === status);
+    }
+    if (priority) {
+        filteredTasks = filteredTasks.filter(task => task.priority_level === priority);
+    }
 
-            if (tasks.length === 0) {
-                taskContainer.innerHTML = "<p class='text-gray-500'>No tasks found.</p>";
-                return;
-            }
+    updateTaskList(filteredTasks);
+    filterDropdown.classList.add('hidden');}
 
-            tasks.forEach(task => {
-                const taskElement = document.createElement("div");
-                taskElement.classList.add("bg-white", "p-4", "rounded", "shadow", "mb-2");
-                taskElement.innerHTML = `
+// Fetch tasks and store in allTasks
+async function getTasks() {
+    try {
+        const response = await fetch("/api/tasks");
+        const tasks = await response.json();
+        allTasks = tasks;  // Ensure allTasks is populated
+        updateTaskList(allTasks);  // Initial display
+    } catch (error) {
+        console.error("Error fetching tasks:", error);
+    }
+}
+
+// Function to update the UI with tasks
+function updateTaskList(tasks) {
+    taskContainer.innerHTML = ""; // Clear previous tasks
+
+    if (!Array.isArray(tasks) || tasks.length === 0) {
+        taskContainer.innerHTML = "<p class='text-gray-500'>No tasks found.</p>";
+        return;
+    }
+
+    tasks.forEach(task => {
+        const taskElement = document.createElement("div");
+        taskElement.classList.add("bg-white", "p-4", "rounded", "shadow", "mb-2");
+        taskElement.innerHTML = `
             <h3 class="text-lg font-semibold">${task.name}</h3>
             <p class="text-sm text-gray-500">Due: ${task.due_date}</p>
             <p class="text-sm ${task.status === "completed" ? "text-green-500" : "text-red-500"}">${task.status}</p>
             <p class="text-sm">Priority: <span class="font-bold">${task.priority_level}</span></p>
         `;
-                taskContainer.appendChild(taskElement);
-            });
-        }
-        // Fetch tasks when the page loads
-        getTasks();
+        taskContainer.appendChild(taskElement);
+    });
+}
+
+// Apply filters on form submit
+filterForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    applyFilters();
+});
+
+// Apply filters when filter values change (instant filtering)
+dueDateFilter.addEventListener("change", applyFilters);
+statusFilter.addEventListener("change", applyFilters);
+priorityFilter.addEventListener("change", applyFilters);
+
+// Fetch tasks when the page loads
+getTasks();
+
         
         document.addEventListener("DOMContentLoaded", () => {
             const taskDate = document.getElementById("taskDate");
@@ -540,6 +561,8 @@ async function getTasks(date = null) {
 
                 taskContainer.innerHTML = "";
                 tasks.forEach(addTaskToUI);
+                allTasks = tasks;
+
             } catch (error) {
                 // console.error("Error fetching tasks:", error);
                 showToast(`Error: ${error.message}`, "bg-red-500");
