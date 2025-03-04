@@ -61,7 +61,7 @@
             if (savedFilename) {
                 fetchImage(savedFilename);
             } else {
-                document.getElementById("profilePic").src = "default-profile.png";
+                document.getElementById("profilePic").src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJzmDxC3d4JdRQjVomPV2oc54WeZhKSMFozw&s";
             }
         });
         
@@ -96,11 +96,11 @@
                     document.getElementById("profilePic").src = data.fileUrl;
                     localStorage.setItem("profileImageUrl", data.fileUrl);
                 } else {
-                    document.getElementById("profilePic").src = "default-profile.png";
+                    document.getElementById("profilePic").src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJzmDxC3d4JdRQjVomPV2oc54WeZhKSMFozw&s";
                 }
             } catch (error) {
                 console.error("Fetch error:", error);
-                document.getElementById("profilePic").src = "default-profile.png";
+                document.getElementById("profilePic").src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJzmDxC3d4JdRQjVomPV2oc54WeZhKSMFozw&s";
             }
         }
 
@@ -117,7 +117,7 @@
 
             if (response.ok) {
                 localStorage.removeItem("profileImageFilename");
-                document.getElementById("profilePic").src = "default-profile.png";
+                document.getElementById("profilePic").src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJzmDxC3d4JdRQjVomPV2oc54WeZhKSMFozw&s";
                 showToast("Profile picture deleted successfully!", "bg-green-500");
             } else {
                 showToast("Error deleting profile picture.","bg-red-500");

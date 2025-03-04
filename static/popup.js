@@ -107,6 +107,7 @@ async function fetchTasks() {
 
         responseData.data.forEach(task => {
             let categoryName = categoryMap[task.category] || "Uncategorized";
+            console.log(`Task: ${task.name}, Category: ${categoryName}`);
         });
     } catch (error) {
         console.error("Error fetching tasks:", error);

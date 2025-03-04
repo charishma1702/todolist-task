@@ -20,13 +20,29 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         console.log("Fetched tasks:", taskResponse);
         if (taskResponse && taskResponse.length > 0) {
             chrome.tabs.query({}, (tabs) => {
-                if (tabs.length > 0) {
-                    chrome.tabs.sendMessage(tabs[0].id, {
-                        action: "updateContainer",
-                        tasks: taskResponse
+                const targetTab = tabs.find(tab => tab.url && tab.url.includes("http://127.0.0.1:8000/index"));
+                if (targetTab) {
+                    console.log("Injecting content.js into tab:", targetTab.id);
+                    
+                    // Inject content.js dynamically
+                    chrome.scripting.executeScript({
+                        target: { tabId: targetTab.id },
+                        files: ["content.js"]
+                    }, () => {
+                        console.log("content.js injected successfully.");
+
+                        // Now send the message after injecting
+                        chrome.tabs.sendMessage(targetTab.id, {
+                            action: "updateContainer",
+                            tasks: taskResponse
+                        });
                     });
+                } else {
+                    console.warn("No matching tab found.");
                 }
             });
+            
+
         } else {
             console.warn("No tasks found or error fetching tasks");
         }
@@ -34,5 +50,3 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         return true;
     }
 });
-
-
