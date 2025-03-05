@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,13 +10,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh; 
-            height: 100vh;
             background-color: #f3f4f6;
             font-family: Arial, sans-serif;
             margin: 0;
             overflow: hidden;
+            height: 100vh;
         }
+
 
         .popup-container {
             background: white;
@@ -129,8 +130,8 @@
         </select>
 
         <div class="button-container">
-            <button onclick="closePopup()" id="cancelTaskBtn">Cancel</button>
-            <button onclick="resetTaskForm()" id="resetTaskBtn">Reset</button>
+            <button id="cancelTaskBtn">Cancel</button>
+            <button id="resetTaskBtn" onclick="resetTask()">Reset</button>
             <button id="addTaskBtn">Add Task</button>
         </div>
     </div>

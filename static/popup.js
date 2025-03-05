@@ -4,32 +4,55 @@ document.addEventListener("DOMContentLoaded", async () => {
     setCurrentDateTime();
 });
 
-
-
-
 // Fetch categories and update the dropdown
 let categoryMap = {};
 const API_URL="http://127.0.0.1:8000/api";
 
+// async function fetchCategories() {
+//     try {
+//         let response = await fetch(`${API_URL}/categories`);
+//         let responseData = await response.json();
+
+//         let categoryDropdown = document.getElementById("taskCategory");
+//         categoryDropdown.innerHTML = "";
+
+//         if (responseData.data && Array.isArray(responseData.data)) {
+//             responseData.data.forEach(category => {
+//                 let option = document.createElement("option");
+//                 option.value = category._id;
+//                 option.textContent = category.name;
+//                 categoryDropdown.appendChild(option);
+//                 categoryMap[category._id] = category.name;
+//             });
+//         } else {
+//             console.error("Invalid categories response:", responseData);
+//         }
+//     } catch (error) {
+//         console.error("Error fetching categories:", error);
+//     }
+// }
 async function fetchCategories() {
     try {
         let response = await fetch(`${API_URL}/categories`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
         let responseData = await response.json();
+
+        if (!responseData.data || !Array.isArray(responseData.data)) {
+            throw new Error("Invalid categories data received");
+        }
 
         let categoryDropdown = document.getElementById("taskCategory");
         categoryDropdown.innerHTML = "";
-
-        if (responseData.data && Array.isArray(responseData.data)) {
-            responseData.data.forEach(category => {
-                let option = document.createElement("option");
-                option.value = category._id;
-                option.textContent = category.name;
-                categoryDropdown.appendChild(option);
-                categoryMap[category._id] = category.name;
-            });
-        } else {
-            console.error("Invalid categories response:", responseData);
-        }
+        
+        responseData.data.forEach(category => {
+            let option = document.createElement("option");
+            option.value = category._id;
+            option.textContent = category.name;
+            categoryDropdown.appendChild(option);
+            categoryMap[category._id] = category.name;
+        });
     } catch (error) {
         console.error("Error fetching categories:", error);
     }
@@ -83,9 +106,7 @@ document.getElementById("addTaskBtn").addEventListener("click", async function (
         if (response.ok) {
             alert("Task Created Successfully!");
             chrome.runtime.sendMessage({action:'fetchTasks'})
-            resetForm();
             document.querySelector(".popup-container").style.display = "none";
-            closePopup();
         } else {
             alert("Error: " + data.detail);
         }
@@ -124,10 +145,9 @@ function resetForm() {
     setCurrentDateTime();
 }
 
-function closePopup() {
+document.getElementById("cancelTaskBtn").addEventListener("click", function () {
     document.querySelector(".popup-container").style.display = "none";
-    document.body.style.height = "auto"; 
-}
+});
 
 document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") {
